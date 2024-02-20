@@ -8,7 +8,7 @@ import (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "sctl",
+	Use:   "scfg",
 	Short: "System Configurator CLI",
 	Long:  `A CLI tool for managing system packages and configuration scripts.`,
 }
