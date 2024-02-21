@@ -1,7 +1,7 @@
 package store
 
 import (
-	"github.com/drew-english/system-configurator/lib/model"
+	"github.com/drew-english/system-configurator/internal/model"
 )
 
 type Store interface {

@@ -6,7 +6,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/drew-english/system-configurator/lib/model"
+	"github.com/drew-english/system-configurator/internal/model"
 )
 
 const (

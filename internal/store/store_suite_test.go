@@ -6,8 +6,8 @@ import (
 	"path"
 	"testing"
 
-	"github.com/drew-english/system-configurator/lib/model"
-	"github.com/drew-english/system-configurator/store"
+	"github.com/drew-english/system-configurator/internal/model"
+	"github.com/drew-english/system-configurator/internal/store"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
