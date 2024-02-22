@@ -1,5 +1,5 @@
 name: ci-multi-platform
-run-name: "CI Multi Platform #${{ github.run_id }}"
+run-name: "CI Multi Platform ${{ github.ref_name }}"
 
 # Only trigger manually for now to keep GH action minutes usage down
 on: workflow_dispatch
