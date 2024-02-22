@@ -1,6 +1,7 @@
 alias r := run
 alias t := test
 alias gt := ginkgo-test
+alias gb := ginkgo-bootstrap
 
 default: run
 
@@ -12,3 +13,7 @@ test:
 
 ginkgo-test:
     ginkgo ./...
+
+ginkgo-bootstrap DIR:
+    #!/usr/bin/env bash
+    cd {{DIR}} && ginkgo bootstrap
