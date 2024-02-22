@@ -1,0 +1,22 @@
+name: ci-multi-platform
+run-name: CI Multi Platform \#${{ github.run_id }}
+
+# Only trigger manually for now to keep GH action minutes usage down
+on: workflow_dispatch
+
+jobs:
+  ci-platform-matrix:
+    strategy:
+      matrix:
+        os: ['ubuntu-latest', 'macos-latest']
+    name: CI ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Go 1.22.0
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.22.0
+      - uses: extractions/setup-just@v1
+      - name: Run tests
+        run: just test

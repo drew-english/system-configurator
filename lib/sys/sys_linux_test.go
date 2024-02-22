@@ -36,6 +36,10 @@ var _ = Describe("Linux", func() {
 			os.WriteFile(releaseDir, fmt.Sprintf("ID=%s", osVendor, 0644))
 		})
 
+		AfterEach(func() {
+			os.RemoveAll("./tmp")
+		})
+
 		for vendor, managers := range expectedManagers {
 			Context(fmt.Sprintf("when the vendor is %s", vendor), func() {
 				It("returns the expected managers", func() {
