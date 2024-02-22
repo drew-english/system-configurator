@@ -11,9 +11,9 @@ import (
 )
 
 var (
-	OSReleaseDirectory = "/etc/os-release"
-	reVendor           = regexp.MustCompile(`^ID=(.*)$`)
-	supportedVendors   = []string{"alpine", "arch", "debian", "fedora", "ubuntu"}
+	OSReleasePath    = "/etc/os-release"
+	reVendor         = regexp.MustCompile(`^ID=(.*)$`)
+	supportedVendors = []string{"alpine", "arch", "debian", "fedora", "ubuntu"}
 
 	managers = map[string][]string{
 		"alpine": {"apk"},
@@ -32,7 +32,7 @@ func SupportedPackageManagers() []string {
 func linuxArch() (vendor string) {
 	vendor = "other"
 
-	f, err := os.Open(OSReleaseDirectory)
+	f, err := os.Open(OSReleasePath)
 	if err != nil {
 		// TODO: log warning
 		return

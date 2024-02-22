@@ -4,6 +4,7 @@ package sys_test
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/drew-english/system-configurator/lib/sys"
 
@@ -24,16 +25,19 @@ var _ = Describe("Linux", func() {
 	Describe("SupportedPackageManagers", func() {
 		var (
 			osVendor   string
-			releaseDir = "./tmp/os-release"
+			releasePath = "./tmp/os-release.txt"
 		)
 
 		BeforeEach(func() {
-			sys.OSReleaseDirectory = releaseDir
+			sys.OSReleasePath = releasePath
 			osVendor = "debian"
 		})
 
 		JustBeforeEach(func() {
-			os.WriteFile(releaseDir, fmt.Sprintf("ID=%s", osVendor, 0644))
+			os.MkdirAll("./tmp", 0755)
+			f, _ := os.Create(releasePath)
+		 	f.WriteString(fmt.Sprintf("ID=%s", osVendor))
+			f.Close()
 		})
 
 		AfterEach(func() {
@@ -42,8 +46,12 @@ var _ = Describe("Linux", func() {
 
 		for vendor, managers := range expectedManagers {
 			Context(fmt.Sprintf("when the vendor is %s", vendor), func() {
+				BeforeEach(func() {
+					osVendor = vendor
+				})
+
 				It("returns the expected managers", func() {
-					Expect(sys.SupportedPackageManagers()).To(Equal(expectedManagers[vendor]))
+					Expect(sys.SupportedPackageManagers()).To(Equal(managers))
 				})
 			})
 		}
