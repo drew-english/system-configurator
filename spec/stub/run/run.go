@@ -12,7 +12,7 @@ import (
 )
 
 type (
-	commandStubManager struct {
+	CommandStubManager struct {
 		stubs []commandStub
 	}
 
@@ -21,8 +21,8 @@ type (
 
 // StubCommand installs a catch-all for exec.Command. It returns a tear down function
 // to be called at the end of tests to clean up the stubs and ensure they were called.
-func StubCommand() (*commandStubManager, func(testing.TB)) {
-	cs := &commandStubManager{}
+func StubCommand() (*CommandStubManager, func(testing.TB)) {
+	cs := &CommandStubManager{}
 
 	restoreOriginalCommand := registerCommandHook(cs)
 	return cs, func(t testing.TB) {
@@ -64,14 +64,18 @@ func StubFind(pattern string, errResult error) func() {
 	}
 }
 
-func registerCommandHook(cs *commandStubManager) func() {
+func registerCommandHook(cs *CommandStubManager) func() {
 	originalCommand := run.Command
 
 	run.Command = func(name string, arg ...string) run.RunCmd {
 		args := append([]string{name}, arg...)
 		stub := cs.find(args)
 		if stub == nil {
-			panic(fmt.Sprintf("no exec stub for `%s`", strings.Join(args, " ")))
+			panic(fmt.Sprintf(
+				"no exec stub for `%s`\n\ncurrently registered stubs:\n%s",
+				strings.Join(args, " "),
+				cs.String(),
+			))
 		}
 
 		stub.execEffects(args)
@@ -85,7 +89,7 @@ func registerCommandHook(cs *commandStubManager) func() {
 }
 
 // Register a command stub that is successful. Use effects to perform actions when the command is called.
-func (cs *commandStubManager) Register(pattern string, output string, effects ...commandEffect) {
+func (cs *CommandStubManager) Register(pattern string, output string, effects ...commandEffect) {
 	if len(pattern) < 1 {
 		panic("cannot use empty regexp pattern")
 	}
@@ -100,7 +104,7 @@ func (cs *commandStubManager) Register(pattern string, output string, effects ..
 }
 
 // RegisterError registers a command stub that returns an error. Use effects to perform actions when the command is called.
-func (cs *commandStubManager) RegisterError(pattern string, exitStatus int, stderr string, effects ...commandEffect) {
+func (cs *CommandStubManager) RegisterError(pattern string, exitStatus int, stderr string, effects ...commandEffect) {
 	if len(pattern) < 1 {
 		panic("cannot use empty regexp pattern")
 	}
@@ -115,7 +119,7 @@ func (cs *commandStubManager) RegisterError(pattern string, exitStatus int, stde
 	})
 }
 
-func (cs *commandStubManager) find(args []string) commandStub {
+func (cs *CommandStubManager) find(args []string) commandStub {
 	line := strings.Join(args, " ")
 	for _, stub := range cs.stubs {
 		if !stub.matched() && stub.matches(line) {
@@ -124,4 +128,13 @@ func (cs *commandStubManager) find(args []string) commandStub {
 	}
 
 	return nil
+}
+
+func (cs *CommandStubManager) String() string {
+	var lines []string
+	for _, stub := range cs.stubs {
+		lines = append(lines, stub.pattern())
+	}
+
+	return strings.Join(lines, "\n")
 }

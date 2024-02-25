@@ -2,6 +2,7 @@ package run
 
 import (
 	"bytes"
+	"errors"
 	"regexp"
 
 	"github.com/drew-english/system-configurator/lib/run"
@@ -81,5 +82,6 @@ func (s *errorCommandStub) Run() error {
 	return run.CmdError{
 		Args:   s.matchedCmd,
 		Stderr: bytes.NewBuffer([]byte(s.stderr)),
+		Err:    errors.New("generic error"),
 	}
 }
