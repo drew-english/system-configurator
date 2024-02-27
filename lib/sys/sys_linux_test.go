@@ -24,7 +24,7 @@ var expectedManagers = map[string][]string{
 var _ = Describe("Linux", func() {
 	Describe("SupportedPackageManagers", func() {
 		var (
-			osVendor   string
+			osVendor    string
 			releasePath = "./tmp/os-release.txt"
 		)
 
@@ -36,7 +36,7 @@ var _ = Describe("Linux", func() {
 		JustBeforeEach(func() {
 			os.MkdirAll("./tmp", 0755)
 			f, _ := os.Create(releasePath)
-		 	f.WriteString(fmt.Sprintf("ID=%s", osVendor))
+			f.WriteString(fmt.Sprintf("ID=%s", osVendor))
 			f.Close()
 		})
 
