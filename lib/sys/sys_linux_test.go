@@ -18,7 +18,7 @@ var expectedManagers = map[string][]string{
 	"debian": {"apt", "snap"},
 	"fedora": {"dnf"},
 	"ubuntu": {"apt", "snap"},
-	"other":  {"apk", "apt", "dnf", "flatpak", "snap", "pacman"},
+	"other":  {"apk", "apt", "dnf", "snap", "pacman"},
 }
 
 var _ = Describe("Linux", func() {
