@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/drew-english/system-configurator/lib/sys"
+	"github.com/drew-english/system-configurator/pkg/sys"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"

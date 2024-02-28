@@ -1,12 +1,12 @@
-package pkg_test
+package pkgmanager_test
 
 import (
 	"errors"
 	"strings"
 	"testing"
 
-	"github.com/drew-english/system-configurator/lib/sys"
-	"github.com/drew-english/system-configurator/lib/sys/pkg"
+	"github.com/drew-english/system-configurator/pkg/sys"
+	"github.com/drew-english/system-configurator/pkg/sys/pkgmanager"
 	"github.com/drew-english/system-configurator/spec/stub/run"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -24,7 +24,7 @@ var _ = Describe("Pkg", func() {
 			unregister := run.StubFind(sys.SupportedPackageManagers()[0], nil)
 			defer unregister()
 
-			manager, err := pkg.FindPackageManager()
+			manager, err := pkgmanager.FindPackageManager()
 			Expect(err).ToNot(HaveOccurred())
 			Expect(manager).ToNot(BeNil())
 		})
@@ -35,7 +35,7 @@ var _ = Describe("Pkg", func() {
 				unregister := run.StubFind(allPkgs, errors.New("not found"))
 				defer unregister()
 
-				manager, err := pkg.FindPackageManager()
+				manager, err := pkgmanager.FindPackageManager()
 				Expect(err).To(HaveOccurred())
 				Expect(manager).To(BeNil())
 			})

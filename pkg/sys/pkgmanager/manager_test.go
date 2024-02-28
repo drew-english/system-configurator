@@ -1,12 +1,12 @@
-package pkg_test
+package pkgmanager_test
 
 import (
 	"fmt"
 	"testing"
 
 	"github.com/drew-english/system-configurator/internal/model"
-	"github.com/drew-english/system-configurator/lib/sys"
-	"github.com/drew-english/system-configurator/lib/sys/pkg"
+	"github.com/drew-english/system-configurator/pkg/sys"
+	"github.com/drew-english/system-configurator/pkg/sys/pkgmanager"
 	"github.com/drew-english/system-configurator/spec/stub/run"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -17,7 +17,7 @@ var _ = Describe("PackageManager", func() {
 	var (
 		commandStubs     *run.CommandStubManager
 		teardownCmdStubs func(testing.TB)
-		manager          pkg.PacakgeManager
+		manager          pkgmanager.PacakgeManager
 	)
 
 	BeforeEach(func() {
@@ -27,7 +27,7 @@ var _ = Describe("PackageManager", func() {
 		defer unregister()
 
 		var err error
-		manager, err = pkg.FindPackageManager()
+		manager, err = pkgmanager.FindPackageManager()
 		Expect(err).ToNot(HaveOccurred())
 	})
 
@@ -171,7 +171,7 @@ e2fsprogs 1.47.0-1`,
 			"pacman": {{Name: "acl", Version: "2.3.2-1"}, {Name: "archlinux-keyring", Version: "20240208-1"}, {Name: "argon2", Version: "20190702-5"}},
 		}
 
-		for mgrName, mgr := range pkg.Managers {
+		for mgrName, mgr := range pkgmanager.Managers {
 			Context(fmt.Sprintf("when the package manager is %s", mgrName), func() {
 				BeforeEach(func() {
 					manager = mgr

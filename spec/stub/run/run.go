@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/drew-english/system-configurator/lib/run"
+	"github.com/drew-english/system-configurator/pkg/run"
 )
 
 type (

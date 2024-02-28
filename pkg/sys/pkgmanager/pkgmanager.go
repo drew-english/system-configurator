@@ -1,5 +1,5 @@
 // Package management on the host system.
-package pkg
+package pkgmanager
 
 import (
 	"errors"
@@ -8,8 +8,8 @@ import (
 	"text/template"
 
 	"github.com/drew-english/system-configurator/internal/model"
-	"github.com/drew-english/system-configurator/lib/run"
-	"github.com/drew-english/system-configurator/lib/sys"
+	"github.com/drew-english/system-configurator/pkg/run"
+	"github.com/drew-english/system-configurator/pkg/sys"
 )
 
 type (
