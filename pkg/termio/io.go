@@ -1,0 +1,88 @@
+package termio
+
+import (
+	"fmt"
+	"io"
+	"os"
+)
+
+type IO struct {
+	cfg *Config
+
+	In     io.Reader
+	Out    io.Writer
+	ErrOut io.Writer
+
+	neverPrompt bool
+}
+
+func New() *IO {
+	return NewWithConfig(ConfigFromEnv())
+}
+
+func NewWithConfig(cfg *Config) *IO {
+	return &IO{
+		cfg:    cfg,
+		In:     os.Stdin,
+		Out:    os.Stdout,
+		ErrOut: os.Stderr,
+	}
+}
+
+func (io *IO) Print(s string) {
+	fmt.Fprint(io.Out, s)
+}
+
+func (io *IO) PrintErr(s string) {
+	fmt.Fprint(io.ErrOut, s)
+}
+
+func (io *IO) IsInteractive() bool {
+	if io.neverPrompt {
+		return false
+	}
+
+	return io.StdinIsTerminal() && io.StdoutIsTerminal()
+}
+
+func (io *IO) StdinIsTerminal() bool {
+	if f, ok := io.In.(*os.File); ok {
+		return IsTerminal(f)
+	}
+
+	return false
+}
+
+func (io *IO) StdoutIsTerminal() bool {
+	if f, ok := io.Out.(*os.File); ok {
+		return IsTerminal(f)
+	}
+
+	return false
+}
+
+func (io *IO) StderrIsTerminal() bool {
+	if f, ok := io.ErrOut.(*os.File); ok {
+		return IsTerminal(f)
+	}
+
+	return false
+}
+
+func (io *IO) SetNeverPrompt(v bool) {
+	io.neverPrompt = v
+}
+
+func (io *IO) Style() *style {
+	return NewStyle(!io.cfg.ColorDisabled, io.cfg.Color256Enabled, io.cfg.TrueColorEnabled)
+}
+
+func (io *IO) clone() *IO {
+	return &IO{
+		cfg:         io.cfg,
+		In:          io.In,
+		Out:         io.Out,
+		ErrOut:      io.ErrOut,
+		neverPrompt: io.neverPrompt,
+	}
+}
