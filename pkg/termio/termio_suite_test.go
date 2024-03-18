@@ -24,6 +24,7 @@ var _ = Describe("Termio", func() {
 		Expect(termio.StdoutIsTerminal()).To(Equal(defaultIO.StdoutIsTerminal()))
 		Expect(termio.StderrIsTerminal()).To(Equal(defaultIO.StderrIsTerminal()))
 		Expect(termio.Style()).ToNot(BeNil())
+		Expect(termio.Warn).ToNot(BeNil())
 		Expect(termio.Print).ToNot(BeNil())
 		Expect(termio.PrintErr).ToNot(BeNil())
 	})

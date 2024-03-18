@@ -37,6 +37,10 @@ func (io *IO) PrintErr(s string) {
 	fmt.Fprint(io.ErrOut, s)
 }
 
+func (io *IO) Warn(s string) {
+	io.PrintErr(io.Style().Yellow("WARNING") + ": " + s)
+}
+
 func (io *IO) IsInteractive() bool {
 	if io.neverPrompt {
 		return false

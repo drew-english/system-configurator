@@ -80,6 +80,19 @@ var _ = Describe("IO", func() {
 		})
 	})
 
+	Describe("Warn", func() {
+		buf := bytes.NewBuffer([]byte{})
+
+		JustBeforeEach(func() {
+			io.ErrOut = buf
+		})
+
+		It("prints to the error output", func() {
+			io.Warn("testing1234")
+			Expect(buf.String()).To(Equal(io.Style().Yellow("WARNING") + ": testing1234"))
+		})
+	})
+
 	Describe("IsInteractive", func() {
 		originalStdout := os.Stdout
 		originalStdin := os.Stdin

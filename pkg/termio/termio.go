@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	defaultIO = New()
+	DefaultIO = New()
 )
 
 func IsTerminal(f *os.File) bool {
@@ -17,35 +17,39 @@ func IsTerminal(f *os.File) bool {
 }
 
 func IsInteractive() bool {
-	return defaultIO.IsInteractive()
+	return DefaultIO.IsInteractive()
 }
 
 func StdinIsTerminal() bool {
-	return defaultIO.StdinIsTerminal()
+	return DefaultIO.StdinIsTerminal()
 }
 
 func StdoutIsTerminal() bool {
-	return defaultIO.StdoutIsTerminal()
+	return DefaultIO.StdoutIsTerminal()
 }
 
 func StderrIsTerminal() bool {
-	return defaultIO.StderrIsTerminal()
+	return DefaultIO.StderrIsTerminal()
 }
 
 func Style() *style {
-	return defaultIO.Style()
+	return DefaultIO.Style()
 }
 
 func WithNeverPrompt(v bool) *IO {
-	io := defaultIO.clone()
+	io := DefaultIO.clone()
 	io.SetNeverPrompt(v)
 	return io
 }
 
 func Print(s string) {
-	defaultIO.Print(s)
+	DefaultIO.Print(s)
 }
 
 func PrintErr(s string) {
-	defaultIO.PrintErr(s)
+	DefaultIO.PrintErr(s)
+}
+
+func Warn(s string) {
+	DefaultIO.PrintErr(DefaultIO.Style().Yellow("WARNING") + ": " + s)
 }
