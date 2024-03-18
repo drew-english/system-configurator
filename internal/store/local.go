@@ -5,8 +5,6 @@ import (
 	"errors"
 	"os"
 	"path"
-
-	"github.com/drew-english/system-configurator/internal/model"
 )
 
 const (
@@ -39,12 +37,12 @@ func NewLocal(cfg *LocalCfg) (s Store, err error) {
 	return
 }
 
-func (ls *localStore) LoadConfiguration() (*model.Configuration, error) {
+func (ls *localStore) LoadConfiguration() (*Configuration, error) {
 	if ls.configFile == nil {
 		return nil, errors.New("error referencing local configuration file")
 	}
 
-	configData := &model.Configuration{}
+	configData := &Configuration{}
 	decoder := json.NewDecoder(ls.configFile)
 	err := decoder.Decode(configData)
 	if err != nil {
@@ -54,7 +52,7 @@ func (ls *localStore) LoadConfiguration() (*model.Configuration, error) {
 	return configData, nil
 }
 
-func (ls *localStore) WriteConfiguration(configData *model.Configuration) error {
+func (ls *localStore) WriteConfiguration(configData *Configuration) error {
 	if ls.configFile == nil {
 		return errors.New("error referencing local configuration file")
 	}

@@ -109,14 +109,14 @@ var _ = Describe("Local", func() {
 			localStore, _ = store.NewLocal(cfg)
 		})
 
-		subject := func() (*model.Configuration, error) {
+		subject := func() (*store.Configuration, error) {
 			return localStore.LoadConfiguration()
 		}
 
 		It("returns the configuration specified in the file", func() {
 			config, err := subject()
 			Expect(err).ToNot(HaveOccurred())
-			Expect(config).To(BeComparableTo(&model.Configuration{
+			Expect(config).To(BeComparableTo(&store.Configuration{
 				Packages: []*model.Package{
 					{
 						Name:    "some-package",
