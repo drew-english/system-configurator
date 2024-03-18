@@ -30,16 +30,28 @@ type (
 	}
 )
 
-func FindPackageManager() (PacakgeManager, error) {
-	possibleManagers := sys.SupportedPackageManagers()
+var (
+	cachedManager PacakgeManager
+)
 
+var FindPackageManager = func() (PacakgeManager, error) {
+	if cachedManager != nil {
+		return cachedManager, nil
+	}
+
+	possibleManagers := sys.SupportedPackageManagers()
 	for _, mgr := range possibleManagers {
 		if _, err := run.Find(mgr); err == nil && Managers[mgr] != nil {
+			cachedManager = Managers[mgr]
 			return Managers[mgr], nil
 		}
 	}
 
 	return nil, errors.New("unable to find a supported package manager on host system")
+}
+
+func ResetCachedManager() {
+	cachedManager = nil
 }
 
 func (pm *basePackageManager) Name() string {

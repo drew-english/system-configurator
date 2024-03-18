@@ -20,6 +20,10 @@ func TestSys(t *testing.T) {
 
 var _ = Describe("Pkg", func() {
 	Describe("FindPackageManager", func() {
+		BeforeEach(func() {
+			pkgmanager.ResetCachedManager()
+		})
+
 		It("returns a package manager", func() {
 			unregister := run.StubFind(sys.SupportedPackageManagers()[0], nil)
 			defer unregister()
