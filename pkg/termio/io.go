@@ -38,7 +38,11 @@ func (io *IO) PrintErr(s string) {
 }
 
 func (io *IO) Warn(s string) {
-	io.PrintErr(io.Style().Yellow("WARNING") + ": " + s)
+	io.PrintErr(io.Style().Yellow("WARNING:") + s)
+}
+
+func (io *IO) Error(s string) {
+	io.PrintErr(io.Style().Red("ERROR:") + s)
 }
 
 func (io *IO) IsInteractive() bool {

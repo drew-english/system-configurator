@@ -89,7 +89,20 @@ var _ = Describe("IO", func() {
 
 		It("prints to the error output", func() {
 			io.Warn("testing1234")
-			Expect(buf.String()).To(Equal(io.Style().Yellow("WARNING") + ": testing1234"))
+			Expect(buf.String()).To(Equal(io.Style().Yellow("WARNING:") + "testing1234"))
+		})
+	})
+
+	Describe("Error", func() {
+		buf := bytes.NewBuffer([]byte{})
+
+		JustBeforeEach(func() {
+			io.ErrOut = buf
+		})
+
+		It("prints to the error output", func() {
+			io.Error("testing1234")
+			Expect(buf.String()).To(Equal(io.Style().Red("ERROR:") + "testing1234"))
 		})
 	})
 
@@ -143,7 +156,7 @@ var _ = Describe("IO", func() {
 
 		Context("when stdout is not terminal", func() {
 			BeforeEach(func() {
-				os.Stdout = os.NewFile(1, "/dev/null")
+				os.Stdout = nil
 			})
 
 			It("returns false", func() {

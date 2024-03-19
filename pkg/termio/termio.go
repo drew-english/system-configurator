@@ -51,5 +51,9 @@ func PrintErr(s string) {
 }
 
 func Warn(s string) {
-	DefaultIO.PrintErr(DefaultIO.Style().Yellow("WARNING") + ": " + s)
+	DefaultIO.Warn(s)
+}
+
+func Error(s string) {
+	DefaultIO.Error(s)
 }

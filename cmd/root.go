@@ -3,6 +3,7 @@ package cmd
 import (
 	"os"
 
+	"github.com/drew-english/system-configurator/cmd/pkg"
 	"github.com/spf13/cobra"
 )
 
@@ -20,4 +21,8 @@ func Execute() {
 	if err != nil {
 		os.Exit(1)
 	}
+}
+
+func init() {
+	rootCmd.AddCommand(pkg.PkgCmd)
 }
