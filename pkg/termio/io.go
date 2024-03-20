@@ -41,8 +41,16 @@ func (io *IO) Warn(s string) {
 	io.PrintErr(io.Style().Yellow("WARNING: ") + s)
 }
 
+func (io *IO) Warnf(s string, args ...interface{}) {
+	io.Warn(fmt.Sprintf(s, args...))
+}
+
 func (io *IO) Error(s string) {
 	io.PrintErr(io.Style().Red("ERROR: ") + s)
+}
+
+func (io *IO) Errorf(s string, args ...interface{}) {
+	io.Error(fmt.Sprintf(s, args...))
 }
 
 func (io *IO) IsInteractive() bool {

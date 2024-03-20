@@ -93,6 +93,19 @@ var _ = Describe("IO", func() {
 		})
 	})
 
+	Describe("Warnf", func() {
+		buf := bytes.NewBuffer([]byte{})
+
+		JustBeforeEach(func() {
+			io.ErrOut = buf
+		})
+
+		It("prints to the error output", func() {
+			io.Warnf("testing1234: %s", "foo")
+			Expect(buf.String()).To(Equal(io.Style().Yellow("WARNING: ") + "testing1234: foo"))
+		})
+	})
+
 	Describe("Error", func() {
 		buf := bytes.NewBuffer([]byte{})
 
@@ -103,6 +116,19 @@ var _ = Describe("IO", func() {
 		It("prints to the error output", func() {
 			io.Error("testing1234")
 			Expect(buf.String()).To(Equal(io.Style().Red("ERROR: ") + "testing1234"))
+		})
+	})
+
+	Describe("Errorf", func() {
+		buf := bytes.NewBuffer([]byte{})
+
+		JustBeforeEach(func() {
+			io.ErrOut = buf
+		})
+
+		It("prints to the error output", func() {
+			io.Errorf("testing1234: %s", "foo")
+			Expect(buf.String()).To(Equal(io.Style().Red("ERROR: ") + "testing1234: foo"))
 		})
 	})
 

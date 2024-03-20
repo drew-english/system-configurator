@@ -57,3 +57,11 @@ func Warn(s string) {
 func Error(s string) {
 	DefaultIO.Error(s)
 }
+
+func Warnf(s string, args ...any) {
+	DefaultIO.Warnf(s, args...)
+}
+
+func Errorf(s string, args ...any) {
+	DefaultIO.Errorf(s, args...)
+}
