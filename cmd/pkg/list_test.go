@@ -72,7 +72,7 @@ var _ = Describe("List", func() {
 		It("returns an error", func() {
 			Expect(subject()).To(HaveOccurred())
 			Expect(stdout).To(BeEmpty())
-			Expect(stderr).To(Equal(s.Red("ERROR:") + "Unable to load configuration: error loading configuration\n"))
+			Expect(stderr).To(BeEmpty())
 		})
 	})
 
@@ -84,7 +84,7 @@ var _ = Describe("List", func() {
 		It("logs a warning and uses the default configurations", func() {
 			Expect(subject()).To(Succeed())
 			Expect(stdout).To(Equal("some-package 1.2.3\n"))
-			Expect(stderr).To(Equal(s.Yellow("WARNING:") + "Unable to resolve packages for host manager, showing raw configuration\n"))
+			Expect(stderr).To(Equal(s.Yellow("WARNING: ") + "Unable to resolve packages for host manager, showing raw configuration\n"))
 		})
 	})
 })

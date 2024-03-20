@@ -16,8 +16,7 @@ var ListCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		cfg, err := store.LoadConfiguration()
 		if err != nil {
-			termio.Error(fmt.Sprintf("Unable to load configuration: %s\n", err))
-			return err
+			return fmt.Errorf("Unable to load configuration: %w", err)
 		}
 
 		pkgs, err := cfg.ResolvedPkgs()
