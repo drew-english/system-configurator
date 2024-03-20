@@ -79,24 +79,36 @@ var _ = Describe("Local", func() {
 				Expect(errors.Is(err, os.ErrNotExist)).To(BeTrue())
 
 				subject()
-				_, err = os.Open("./tmp/system-configurator/config.json")
+
+				file, err := os.Open("./tmp/system-configurator/config.json")
 				Expect(err).ToNot(HaveOccurred())
+				defer file.Close()
+
+				buf := make([]byte, 2)
+				file.Read(buf)
+				Expect(buf).To(Equal([]byte("{}")))
 			})
 		})
 
 		Context("when no configuration is given", func() {
+			var original func() string
 			BeforeEach(func() {
 				cfgFixture = ""
 				cfg = nil
+				original = store.LocalDefaultLocation
+				store.LocalDefaultLocation = func() string {
+					return "./default-tmp/system-configurator"
+				}
 			})
 
 			AfterEach(func() {
-				os.RemoveAll("~") // safe in tests as it references the cwd
+				os.RemoveAll("./default-tmp/system-configurator")
+				store.LocalDefaultLocation = original
 			})
 
 			It("loads the config from the default location", func() {
 				subject()
-				_, err := os.Open(path.Join(store.LocalDefaultLocation, store.LocalDefaultFileName))
+				_, err := os.Open(path.Join("./default-tmp/system-configurator", store.LocalDefaultFileName))
 				Expect(err).ToNot(HaveOccurred())
 			})
 		})
@@ -150,6 +162,26 @@ var _ = Describe("Local", func() {
 			It("returns an error", func() {
 				_, err := subject()
 				Expect(err).To(MatchError("error referencing local configuration file"))
+			})
+		})
+	})
+
+	Describe("LocalDefaultLocation", func() {
+		subject := func() string {
+			return store.LocalDefaultLocation()
+		}
+
+		It("returns the default location for the local config file", func() {
+			Expect(subject()).To(Equal(path.Join(os.Getenv("HOME"), ".config/system-configurator")))
+		})
+
+		Context("when the $HOME environment variable is not set", func() {
+			BeforeEach(func() {
+				os.Unsetenv("HOME")
+			})
+
+			It("panics", func() {
+				Expect(func() { subject() }).To(Panic())
 			})
 		})
 	})

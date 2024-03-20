@@ -3,12 +3,12 @@ package store
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"path"
 )
 
 const (
-	LocalDefaultLocation = "~/.config/system-configurator"
 	LocalDefaultFileName = "config.json"
 )
 
@@ -35,6 +35,10 @@ func NewLocal(cfg *LocalCfg) (s Store, err error) {
 
 	localStore.configFile = file
 	return
+}
+
+var LocalDefaultLocation = func() string {
+	return fmt.Sprintf("%s/.config/system-configurator", resolveHomeDir())
 }
 
 func (ls *localStore) LoadConfiguration() (*Configuration, error) {
@@ -71,7 +75,7 @@ func (ls *localStore) WriteConfiguration(configData *Configuration) error {
 }
 
 func (ls *localStore) localConfigFile() (*os.File, error) {
-	file, err := os.Open(ls.cfg.filePath())
+	file, err := os.OpenFile(ls.cfg.filePath(), os.O_RDWR, 0644)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
 			return ls.createLocalConfigFile()
@@ -94,6 +98,16 @@ func (ls *localStore) createLocalConfigFile() (*os.File, error) {
 		return nil, err
 	}
 
+	_, err = file.Write([]byte("{}"))
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = file.Seek(0, 0)
+	if err != nil {
+		return nil, err
+	}
+
 	return file, nil
 }
 
@@ -106,7 +120,7 @@ func (lc *LocalCfg) location() string {
 		return lc.Location
 	}
 
-	return LocalDefaultLocation
+	return LocalDefaultLocation()
 }
 
 func (lc *LocalCfg) fileName() string {
@@ -115,4 +129,17 @@ func (lc *LocalCfg) fileName() string {
 	}
 
 	return LocalDefaultFileName
+}
+
+func resolveHomeDir() string {
+	if home := os.Getenv("HOME"); home != "" {
+		return home
+	}
+
+	home, err := os.UserConfigDir()
+	if err != nil {
+		panic("unable to determine user's home directory\nplease set the $HOME environment variable or ensure %USERPROFILE% is set on Windows systems")
+	}
+
+	return home
 }

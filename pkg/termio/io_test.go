@@ -89,7 +89,7 @@ var _ = Describe("IO", func() {
 
 		It("prints to the error output", func() {
 			io.Warn("testing1234")
-			Expect(buf.String()).To(Equal(io.Style().Yellow("WARNING:") + "testing1234"))
+			Expect(buf.String()).To(Equal(io.Style().Yellow("WARNING: ") + "testing1234"))
 		})
 	})
 
@@ -102,7 +102,7 @@ var _ = Describe("IO", func() {
 
 		It("prints to the error output", func() {
 			io.Error("testing1234")
-			Expect(buf.String()).To(Equal(io.Style().Red("ERROR:") + "testing1234"))
+			Expect(buf.String()).To(Equal(io.Style().Red("ERROR: ") + "testing1234"))
 		})
 	})
 
