@@ -49,7 +49,7 @@ var _ = Describe("List", func() {
 	})
 
 	JustBeforeEach(func() {
-		store.StubConfiguration(cfg)
+		store.StubLoadConfiguration(cfg)
 		pkgmanager.StubFindPackageManager(manager)
 	})
 
@@ -60,13 +60,13 @@ var _ = Describe("List", func() {
 
 	It("lists the pacakges from the configuration", func() {
 		Expect(subject()).To(Succeed())
-		Expect(stdout).To(Equal("apt-some-package 1.2.3\n"))
+		Expect(stdout).To(Equal("apt-some-package@1.2.3\n"))
 		Expect(stderr).To(BeEmpty())
 	})
 
 	Context("when the configuration cannot be loaded", func() {
 		JustBeforeEach(func() {
-			store.StubConfigurationError()
+			store.StubLoadConfigurationError()
 		})
 
 		It("returns an error", func() {
@@ -83,7 +83,7 @@ var _ = Describe("List", func() {
 
 		It("logs a warning and uses the default configurations", func() {
 			Expect(subject()).To(Succeed())
-			Expect(stdout).To(Equal("some-package 1.2.3\n"))
+			Expect(stdout).To(Equal("some-package@1.2.3\n"))
 			Expect(stderr).To(Equal(s.Yellow("WARNING: ") + "Unable to resolve packages for host manager, showing raw configuration\n"))
 		})
 	})

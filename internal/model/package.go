@@ -1,9 +1,28 @@
 package model
 
+import (
+	"fmt"
+	"regexp"
+)
+
+var packageRegex = regexp.MustCompile(`^([^@\s]+)(?:$|@(\S+$))`)
+
 type Package struct {
 	Name       string              `json:"name"`
-	Version    string              `json:"version"`
-	Alternates map[string]*Package `json:"alternates"` // map of alternative package manager name to package info
+	Version    string              `json:"version,omitempty"`
+	Alternates map[string]*Package `json:"alternates,omitempty"` // map of alternative package manager name to package info
+}
+
+func ParsePackage(pkgStr string) (*Package, error) {
+	matches := packageRegex.FindStringSubmatch(pkgStr)
+	if matches == nil {
+		return nil, fmt.Errorf("failed to parse package string: %s", pkgStr)
+	}
+
+	return &Package{
+		Name:    matches[1],
+		Version: matches[2],
+	}, nil
 }
 
 func (p *Package) ForManager(managerName string) *Package {
@@ -15,5 +34,10 @@ func (p *Package) ForManager(managerName string) *Package {
 }
 
 func (p *Package) String() string {
-	return p.Name + " " + p.Version
+	s := p.Name
+	if p.Version != "" {
+		s += "@" + p.Version
+	}
+
+	return s
 }

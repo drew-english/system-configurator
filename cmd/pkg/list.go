@@ -11,8 +11,10 @@ import (
 var ListCmd = &cobra.Command{
 	Use:     "list",
 	Aliases: []string{"ls"},
-	Short:   "List all confiugration packages",
-	Long:    "List all confiugration packages.",
+	Short:   "List packages",
+	Long: `List packages.
+
+Usage: system-configurator pkg list`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		cfg, err := store.LoadConfiguration()
 		if err != nil {

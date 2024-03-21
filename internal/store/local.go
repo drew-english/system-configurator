@@ -65,7 +65,7 @@ func (ls *localStore) WriteConfiguration(configData *Configuration) error {
 		return errors.New("configuration data cannot be nil")
 	}
 
-	data, err := json.Marshal(configData)
+	data, err := json.MarshalIndent(configData, "", "  ")
 	if err != nil {
 		return err
 	}
