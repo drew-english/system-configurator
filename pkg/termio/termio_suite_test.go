@@ -29,6 +29,7 @@ var _ = Describe("Termio", func() {
 		Expect(termio.Error).ToNot(BeNil())
 		Expect(termio.Errorf).ToNot(BeNil())
 		Expect(termio.Print).ToNot(BeNil())
+		Expect(termio.Printf).ToNot(BeNil())
 		Expect(termio.PrintErr).ToNot(BeNil())
 	})
 

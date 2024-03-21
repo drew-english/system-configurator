@@ -67,6 +67,19 @@ var _ = Describe("IO", func() {
 		})
 	})
 
+	Describe("Printf", func() {
+		buf := bytes.NewBuffer([]byte{})
+
+		JustBeforeEach(func() {
+			io.Out = buf
+		})
+
+		It("prints to the output", func() {
+			io.Printf("testing1234: %s", "foo")
+			Expect(buf.String()).To(Equal("testing1234: foo"))
+		})
+	})
+
 	Describe("PrintErr", func() {
 		buf := bytes.NewBuffer([]byte{})
 

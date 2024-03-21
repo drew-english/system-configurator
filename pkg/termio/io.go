@@ -33,6 +33,10 @@ func (io *IO) Print(s string) {
 	fmt.Fprint(io.Out, s)
 }
 
+func (io *IO) Printf(s string, args ...any) {
+	fmt.Fprintf(io.Out, s, args...)
+}
+
 func (io *IO) PrintErr(s string) {
 	fmt.Fprint(io.ErrOut, s)
 }
@@ -41,7 +45,7 @@ func (io *IO) Warn(s string) {
 	io.PrintErr(io.Style().Yellow("WARNING: ") + s)
 }
 
-func (io *IO) Warnf(s string, args ...interface{}) {
+func (io *IO) Warnf(s string, args ...any) {
 	io.Warn(fmt.Sprintf(s, args...))
 }
 
@@ -49,7 +53,7 @@ func (io *IO) Error(s string) {
 	io.PrintErr(io.Style().Red("ERROR: ") + s)
 }
 
-func (io *IO) Errorf(s string, args ...interface{}) {
+func (io *IO) Errorf(s string, args ...any) {
 	io.Error(fmt.Sprintf(s, args...))
 }
 

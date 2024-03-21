@@ -46,6 +46,10 @@ func Print(s string) {
 	DefaultIO.Print(s)
 }
 
+func Printf(s string, args ...any) {
+	DefaultIO.Printf(s, args...)
+}
+
 func PrintErr(s string) {
 	DefaultIO.PrintErr(s)
 }
