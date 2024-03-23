@@ -65,3 +65,14 @@ func (c *Configuration) AddPackage(pkg *model.Package) error {
 	c.Packages = append(c.Packages, pkg)
 	return nil
 }
+
+func (c *Configuration) RemovePackage(name string) error {
+	for i, p := range c.Packages {
+		if p.Name == name {
+			c.Packages = append(c.Packages[:i], c.Packages[i+1:]...)
+			return nil
+		}
+	}
+
+	return errors.New("package does not exist in configuration")
+}
