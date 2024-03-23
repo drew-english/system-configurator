@@ -14,7 +14,7 @@ var ListCmd = &cobra.Command{
 	Short:   "List packages",
 	Long: `List packages.
 
-Usage: system-configurator pkg list`,
+Usage: scfg pkg list`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		cfg, err := store.LoadConfiguration()
 		if err != nil {

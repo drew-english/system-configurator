@@ -14,7 +14,7 @@ var RemoveCmd = &cobra.Command{
 	Long: `Remove an arbitrary number of packages.
 	Packages are specified in the form <package-name>.
 
-	Usage: system-configurator pkg rm <package-name>...`,
+	Usage: scfg pkg rm <package-name>...`,
 	Args: cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		cfg, err := store.LoadConfiguration()

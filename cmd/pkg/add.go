@@ -16,7 +16,7 @@ var AddCmd = &cobra.Command{
 	Long: `Add an arbitrary number of packages.
 Packages are specified in the form <package-name>[@<version>], where the version is optional.
 
-Usage: system-configurator pkg add <package-name>@<version> <package-name> ...`,
+Usage: scfg pkg add <package-name>@<version> <package-name> ...`,
 	Args: cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		pkgsToAdd := make([]*model.Package, 0, len(args))
