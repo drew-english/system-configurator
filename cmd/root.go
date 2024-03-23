@@ -3,6 +3,7 @@ package cmd
 import (
 	"os"
 
+	"github.com/drew-english/system-configurator/cmd/mode"
 	"github.com/drew-english/system-configurator/cmd/pkg"
 	"github.com/spf13/cobra"
 )
@@ -24,5 +25,6 @@ func Execute() {
 }
 
 func init() {
+	rootCmd.AddCommand(mode.ModeCmd)
 	rootCmd.AddCommand(pkg.PkgCmd)
 }
