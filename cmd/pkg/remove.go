@@ -36,3 +36,7 @@ var RemoveCmd = &cobra.Command{
 		return nil
 	},
 }
+
+func init() {
+	PkgCmd.AddCommand(RemoveCmd)
+}
