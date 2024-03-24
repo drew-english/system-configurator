@@ -72,13 +72,13 @@ var _ = Describe("PackageManager", func() {
 
 		It("returns nil", func() {
 			commandStubs.Register(rmPkgExpression, "package removed successfully")
-			Expect(manager.RemovePackage(pkg)).ToNot(HaveOccurred())
+			Expect(manager.RemovePackage(pkg.Name)).ToNot(HaveOccurred())
 		})
 
 		Context("when the command fails", func() {
 			It("returns an error", func() {
 				commandStubs.RegisterError(rmPkgExpression, 1, "failed to find package")
-				Expect(manager.RemovePackage(pkg)).To(MatchError(fmt.Sprintf("failed to find package\n%s: %s", manager.Name(), "generic error")))
+				Expect(manager.RemovePackage(pkg.Name)).To(MatchError(fmt.Sprintf("failed to find package\n%s: %s", manager.Name(), "generic error")))
 			})
 		})
 	})

@@ -16,7 +16,7 @@ type (
 	PacakgeManager interface {
 		Name() string
 		AddPackage(*model.Package) error
-		RemovePackage(*model.Package) error
+		RemovePackage(string) error
 		ListPackages() ([]*model.Package, error)
 	}
 
@@ -63,8 +63,8 @@ func (pm *basePackageManager) AddPackage(pkg *model.Package) error {
 	return run.Command(pm.BaseCmd, args...).Run()
 }
 
-func (pm *basePackageManager) RemovePackage(pkg *model.Package) error {
-	args := append(pm.RemoveCmd, pkg.Name)
+func (pm *basePackageManager) RemovePackage(pkgName string) error {
+	args := append(pm.RemoveCmd, pkgName)
 	return run.Command(pm.BaseCmd, args...).Run()
 }
 

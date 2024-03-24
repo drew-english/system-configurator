@@ -3,8 +3,10 @@ package pkg
 import (
 	"fmt"
 
+	"github.com/drew-english/system-configurator/internal/mode"
 	"github.com/drew-english/system-configurator/internal/model"
 	"github.com/drew-english/system-configurator/internal/store"
+	"github.com/drew-english/system-configurator/pkg/sys/pkgmanager"
 	"github.com/drew-english/system-configurator/pkg/termio"
 	"github.com/spf13/cobra"
 )
@@ -29,19 +31,32 @@ Usage: scfg pkg add <package-name>@<version> <package-name> ...`,
 			pkgsToAdd = append(pkgsToAdd, pkg)
 		}
 
-		cfg, err := store.LoadConfiguration()
-		if err != nil {
-			return fmt.Errorf("Unable to load configuration: %w", err)
-		}
-
-		for _, pkg := range pkgsToAdd {
-			if err := cfg.AddPackage(pkg); err != nil {
-				termio.Warnf("Failed to add package `%s`: %v\n", pkg, err)
+		var cfg *store.Configuration
+		if modifyConfig() {
+			var err error
+			if cfg, err = store.LoadConfiguration(); err != nil {
+				return fmt.Errorf("Unable to load configuration: %w", err)
 			}
 		}
 
-		if err := store.WriteConfiguration(cfg); err != nil {
-			return fmt.Errorf("Failed to write configuration: %w", err)
+		var manager pkgmanager.PacakgeManager
+		if modifySystem() {
+			var err error
+			if manager, err = pkgmanager.FindPackageManager(); err != nil {
+				return fmt.Errorf("Failed to resolve a package manager: %w", err)
+			}
+		}
+
+		for _, pkg := range pkgsToAdd {
+			if err := addPackage(cfg, manager, pkg); err != nil {
+				return fmt.Errorf("Failed to add package `%s`: %v\n", pkg, err)
+			}
+		}
+
+		if cfg != nil {
+			if err := store.WriteConfiguration(cfg); err != nil {
+				return fmt.Errorf("Failed to write configuration: %w", err)
+			}
 		}
 
 		termio.Printf("Successfully added %d packages\n", len(pkgsToAdd))
@@ -51,4 +66,30 @@ Usage: scfg pkg add <package-name>@<version> <package-name> ...`,
 
 func init() {
 	PkgCmd.AddCommand(AddCmd)
+}
+
+func addPackage(cfg *store.Configuration, manager pkgmanager.PacakgeManager, pkg *model.Package) error {
+	if manager != nil {
+		if err := manager.AddPackage(pkg); err != nil {
+			return err
+		}
+	}
+
+	if cfg != nil {
+		if err := cfg.AddPackage(pkg); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func modifySystem() bool {
+	currentMode := mode.Current()
+	return currentMode == mode.ModeHybrid || currentMode == mode.ModeSystem
+}
+
+func modifyConfig() bool {
+	currentMode := mode.Current()
+	return currentMode == mode.ModeHybrid || currentMode == mode.ModeConfiguration
 }

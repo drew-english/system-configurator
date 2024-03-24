@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/drew-english/system-configurator/internal/store"
+	"github.com/drew-english/system-configurator/pkg/sys/pkgmanager"
 	"github.com/drew-english/system-configurator/pkg/termio"
 	"github.com/spf13/cobra"
 )
@@ -17,14 +18,25 @@ var RemoveCmd = &cobra.Command{
 	Usage: scfg pkg rm <package-name>...`,
 	Args: cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		cfg, err := store.LoadConfiguration()
-		if err != nil {
-			return fmt.Errorf("Unable to load configuration: %w", err)
+		var cfg *store.Configuration
+		if modifyConfig() {
+			var err error
+			if cfg, err = store.LoadConfiguration(); err != nil {
+				return fmt.Errorf("Unable to load configuration: %w", err)
+			}
+		}
+
+		var manager pkgmanager.PacakgeManager
+		if modifySystem() {
+			var err error
+			if manager, err = pkgmanager.FindPackageManager(); err != nil {
+				return fmt.Errorf("Failed to resolve a package manager: %w", err)
+			}
 		}
 
 		for _, pkgName := range args {
-			if err := cfg.RemovePackage(pkgName); err != nil {
-				termio.Warnf("Failed to remove package `%s`: %s\n", pkgName, err)
+			if err := removePackage(cfg, manager, pkgName); err != nil {
+				return fmt.Errorf("Failed to remove package `%s`: %s\n", pkgName, err)
 			}
 		}
 
@@ -39,4 +51,20 @@ var RemoveCmd = &cobra.Command{
 
 func init() {
 	PkgCmd.AddCommand(RemoveCmd)
+}
+
+func removePackage(cfg *store.Configuration, manager pkgmanager.PacakgeManager, pkgName string) error {
+	if manager != nil {
+		if err := manager.RemovePackage(pkgName); err != nil {
+			return err
+		}
+	}
+
+	if cfg != nil {
+		if err := cfg.RemovePackage(pkgName); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
