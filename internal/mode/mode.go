@@ -1,9 +1,8 @@
 package mode
 
 import (
-	"os"
-
 	"github.com/drew-english/system-configurator/pkg/termio"
+	"github.com/spf13/viper"
 )
 
 const (
@@ -40,15 +39,11 @@ func Parse(mode string) Mode {
 	return -1
 }
 
-func Set[M ~int](mode M) {
-	os.Setenv(envVar, modeToS[Mode(mode)])
-}
-
 func Current() Mode {
-	if modeStr := os.Getenv(envVar); modeStr != "" {
+	if modeStr := viper.GetString("mode"); modeStr != "" {
 		mode := Parse(modeStr)
 		if mode == -1 {
-			termio.Errorf("Current SCFG_MODE `%s` is invalid, using default of `configuration`\n", modeStr)
+			termio.Errorf("Current mode `%s` is invalid, using default of `configuration`\n", modeStr)
 			return defaultMode
 		}
 

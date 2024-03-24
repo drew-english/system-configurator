@@ -2,11 +2,11 @@ package mode_test
 
 import (
 	"fmt"
-	"os"
 	"testing"
 
 	"github.com/drew-english/system-configurator/internal/mode"
 	"github.com/drew-english/system-configurator/spec/stub/termio"
+	"github.com/spf13/viper"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -43,41 +43,28 @@ var _ = Describe("Mode", func() {
 		})
 	})
 
-	Describe("Set", func() {
-		It("sets the env var based on the given mode", func() {
-			mode.Set(mode.ModeConfiguration)
-			Expect(os.Getenv("SCFG_MODE")).To(Equal("configuration"))
-			mode.Set(mode.ModeSystem)
-			Expect(os.Getenv("SCFG_MODE")).To(Equal("system"))
-			mode.Set(mode.ModeHybrid)
-			Expect(os.Getenv("SCFG_MODE")).To(Equal("hybrid"))
-			mode.Set(47)
-			Expect(os.Getenv("SCFG_MODE")).To(Equal(""))
-		})
-	})
-
 	Describe("Current", func() {
 		It("returns the corresponding mode", func() {
 			for modeStr, modeInt := range recognizedModes {
-				os.Setenv("SCFG_MODE", modeStr)
+				viper.Set("mode", modeStr)
 				Expect(mode.Current()).To(Equal(modeInt))
 			}
 		})
 
 		Context("when the env var is not set", func() {
 			It("returns the default mode", func() {
-				os.Setenv("SCFG_MODE", "")
+				viper.Set("mode", "")
 				Expect(mode.Current()).To(Equal(mode.Mode(0)))
 			})
 		})
 
-		Context("when the env var is set to an unrecognized value", func() {
+		Context("when the var is set to an unrecognized value", func() {
 			It("returns the default mode", func() {
-				os.Setenv("SCFG_MODE", "invalid")
+				viper.Set("mode", "invalid")
 				var returnedMode mode.Mode
 
 				_, stderr := termio.CaptureTermOut(func() { returnedMode = mode.Current() })
-				Expect(stderr).To(ContainSubstring("Current SCFG_MODE `invalid` is invalid, using default of `configuration`\n"))
+				Expect(stderr).To(ContainSubstring("Current mode `invalid` is invalid, using default of `configuration`\n"))
 				Expect(returnedMode).To(Equal(mode.Mode(0)))
 			})
 		})

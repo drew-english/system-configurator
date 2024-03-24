@@ -1,22 +1,21 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 
-	"github.com/drew-english/system-configurator/cmd/mode"
 	"github.com/drew-english/system-configurator/cmd/pkg"
+	"github.com/drew-english/system-configurator/internal/mode"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
-// rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "scfg",
 	Short: "System Configurator CLI",
 	Long:  `A CLI tool for managing system packages and configuration scripts.`,
 }
 
-// Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
@@ -25,6 +24,20 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.AddCommand(mode.ModeCmd)
+	cobra.OnInitialize(initConfig)
+
+	rootCmd.PersistentFlags().StringP("mode", "m", "configuration", "Set the mode of system-configurator. Valid options are: conf[iguration], sys[tem], and hyb[rid].")
+	viper.BindPFlag("mode", rootCmd.PersistentFlags().Lookup("mode"))
+	viper.SetDefault("mode", "configuration")
+
 	rootCmd.AddCommand(pkg.PkgCmd)
+}
+
+func initConfig() {
+	viper.SetEnvPrefix("SCFG")
+	viper.AutomaticEnv()
+
+	if mode.Parse(viper.GetString("mode")) == -1 {
+		cobra.CheckErr(fmt.Sprintf("mode `%s` is invalid\n", viper.GetString("mode")))
+	}
 }
