@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	ModeConfiguration = iota
+	ModeConfiguration = Mode(iota)
 	ModeSystem
 	ModeHybrid
 
@@ -15,7 +15,7 @@ const (
 	envVar      = "SCFG_MODE"
 )
 
-var sToMode = map[string]int{
+var sToMode = map[string]Mode{
 	"conf":          ModeConfiguration,
 	"configuration": ModeConfiguration,
 	"system":        ModeSystem,
@@ -24,13 +24,15 @@ var sToMode = map[string]int{
 	"hyb":           ModeHybrid,
 }
 
-var modeToS = map[int]string{
+var modeToS = map[Mode]string{
 	ModeConfiguration: "configuration",
 	ModeSystem:        "system",
 	ModeHybrid:        "hybrid",
 }
 
-func Parse(mode string) int {
+type Mode int
+
+func Parse(mode string) Mode {
 	if m, ok := sToMode[mode]; ok {
 		return m
 	}
@@ -38,11 +40,11 @@ func Parse(mode string) int {
 	return -1
 }
 
-func Set(mode int) {
-	os.Setenv(envVar, modeToS[mode])
+func Set[M ~int](mode M) {
+	os.Setenv(envVar, modeToS[Mode(mode)])
 }
 
-func Current() int {
+func Current() Mode {
 	if modeStr := os.Getenv(envVar); modeStr != "" {
 		mode := Parse(modeStr)
 		if mode == -1 {
@@ -50,8 +52,12 @@ func Current() int {
 			return defaultMode
 		}
 
-		return mode
+		return Mode(mode)
 	}
 
 	return defaultMode
+}
+
+func (m Mode) String() string {
+	return modeToS[m]
 }

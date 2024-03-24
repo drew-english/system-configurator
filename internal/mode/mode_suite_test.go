@@ -18,7 +18,7 @@ func TestMode(t *testing.T) {
 }
 
 var _ = Describe("Mode", func() {
-	var recognizedModes = map[string]int{
+	var recognizedModes = map[string]mode.Mode{
 		"conf":          mode.ModeConfiguration,
 		"configuration": mode.ModeConfiguration,
 		"system":        mode.ModeSystem,
@@ -38,7 +38,7 @@ var _ = Describe("Mode", func() {
 
 		Context("when the mode is not recognized", func() {
 			It("returns -1", func() {
-				Expect(mode.Parse("invalid")).To(Equal(-1))
+				Expect(mode.Parse("invalid")).To(Equal(mode.Mode(-1)))
 			})
 		})
 	})
@@ -67,18 +67,18 @@ var _ = Describe("Mode", func() {
 		Context("when the env var is not set", func() {
 			It("returns the default mode", func() {
 				os.Setenv("SCFG_MODE", "")
-				Expect(mode.Current()).To(Equal(0))
+				Expect(mode.Current()).To(Equal(mode.Mode(0)))
 			})
 		})
 
 		Context("when the env var is set to an unrecognized value", func() {
 			It("returns the default mode", func() {
 				os.Setenv("SCFG_MODE", "invalid")
-				var returnedMode int
+				var returnedMode mode.Mode
 
 				_, stderr := termio.CaptureTermOut(func() { returnedMode = mode.Current() })
 				Expect(stderr).To(ContainSubstring("Current SCFG_MODE `invalid` is invalid, using default of `configuration`\n"))
-				Expect(returnedMode).To(Equal(0))
+				Expect(returnedMode).To(Equal(mode.Mode(0)))
 			})
 		})
 	})
