@@ -85,3 +85,11 @@ func (s *errorCommandStub) Run() error {
 		Err:    errors.New("generic error"),
 	}
 }
+
+func (s *errorCommandStub) Output() ([]byte, error) {
+	return []byte(s.stderr), run.CmdError{
+		Args:   s.matchedCmd,
+		Stderr: bytes.NewBuffer([]byte(s.stderr)),
+		Err:    errors.New("generic error"),
+	}
+}

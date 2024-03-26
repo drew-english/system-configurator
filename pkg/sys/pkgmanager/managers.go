@@ -40,7 +40,7 @@ var (
 		RemoveCmd:        cmd("remove"),
 		ListCmd:          cmd("list", "--versions"),
 		listParsePattern: re(`^([\w-]+)\s(\S+)`),
-		versionTmpl:      tpl("{{.Name}}@{{.Version}}"),
+		versionTmpl:      tpl("{{.Name}}"),
 	}
 
 	dnf = &basePackageManager{

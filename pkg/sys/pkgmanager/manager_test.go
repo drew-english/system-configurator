@@ -46,7 +46,7 @@ var _ = Describe("PackageManager", func() {
 		var addPkgExpression string
 
 		BeforeEach(func() {
-			addPkgExpression = fmt.Sprintf("%s (add|install|-S).* %s.*%s", manager.Name(), pkg.Name, pkg.Version)
+			addPkgExpression = fmt.Sprintf("%s (add|install|-S).* %s.*", manager.Name(), pkg.Name)
 		})
 
 		It("returns nil", func() {
