@@ -12,6 +12,7 @@ import (
 var RemoveCmd = &cobra.Command{
 	Use:     "remove",
 	Aliases: []string{"rm"},
+	Short:   `Remove packages`,
 	Long: `Remove an arbitrary number of packages.
 	Packages are specified in the form <package-name>.
 
