@@ -17,7 +17,10 @@ var ListCmd = &cobra.Command{
 	Use:     "list",
 	Aliases: []string{"ls"},
 	Short:   "List packages",
-	Long: `List packages.
+	Long: `List packages. Has different behavior based on the current mode:
+- Configuration: List packages in the configuration only.
+- System: List packages in the system only.
+- Hybrid: List packages in both the configuration and system, with a + or - sign indicating if the package is in the configuration or system, respectively.
 
 Usage: scfg pkg list`,
 	RunE: func(cmd *cobra.Command, args []string) error {
@@ -49,11 +52,11 @@ Usage: scfg pkg list`,
 		}
 
 		slices.SortFunc(configPackages, func(x *model.Package, y *model.Package) int {
-			return cmp.Compare(x.String(), y.String())
+			return comparePackage(x, y)
 		})
 
 		slices.SortFunc(sysPackages, func(x *model.Package, y *model.Package) int {
-			return cmp.Compare(x.String(), y.String())
+			return comparePackage(x, y)
 		})
 
 		cfgIdx := 0

@@ -30,7 +30,11 @@ func (p *Package) ForManager(managerName string) *Package {
 		return p
 	}
 
-	return p.Alternates[managerName]
+	if alternate := p.Alternates[managerName]; alternate != nil {
+		return alternate
+	}
+
+	return p
 }
 
 func (p *Package) String() string {
