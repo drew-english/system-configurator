@@ -18,6 +18,7 @@ type (
 		AddPackage(*model.Package) error
 		RemovePackage(string) error
 		ListPackages() ([]*model.Package, error)
+		FmtPackageVersion(*model.Package) string
 	}
 
 	basePackageManager struct {
@@ -59,7 +60,7 @@ func (pm *basePackageManager) Name() string {
 }
 
 func (pm *basePackageManager) AddPackage(pkg *model.Package) error {
-	args := append(pm.AddCmd, pm.fmtPackageVersion(pkg))
+	args := append(pm.AddCmd, pm.FmtPackageVersion(pkg))
 	return run.Command(pm.BaseCmd, args...).Run()
 }
 
@@ -90,19 +91,7 @@ func (pm *basePackageManager) ListPackages() ([]*model.Package, error) {
 	return pkgs, nil
 }
 
-func (pm *basePackageManager) parsePgk(line string) *model.Package {
-	matches := pm.listParsePattern.FindStringSubmatch(line)
-	if matches == nil {
-		return nil
-	}
-
-	return &model.Package{
-		Name:    matches[1],
-		Version: matches[2],
-	}
-}
-
-func (pm *basePackageManager) fmtPackageVersion(pkg *model.Package) string {
+func (pm *basePackageManager) FmtPackageVersion(pkg *model.Package) string {
 	if pkg.Version == "" {
 		return pkg.Name
 	}
@@ -113,4 +102,16 @@ func (pm *basePackageManager) fmtPackageVersion(pkg *model.Package) string {
 	}
 
 	return buf.String()
+}
+
+func (pm *basePackageManager) parsePgk(line string) *model.Package {
+	matches := pm.listParsePattern.FindStringSubmatch(line)
+	if matches == nil {
+		return nil
+	}
+
+	return &model.Package{
+		Name:    matches[1],
+		Version: matches[2],
+	}
 }
