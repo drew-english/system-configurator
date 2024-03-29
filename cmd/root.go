@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/drew-english/system-configurator/cmd/pkg"
+	"github.com/drew-english/system-configurator/cmd/pkg/alternate"
 	"github.com/drew-english/system-configurator/internal/mode"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -31,6 +32,7 @@ func init() {
 	viper.SetDefault("mode", "configuration")
 
 	rootCmd.AddCommand(pkg.PkgCmd)
+	rootCmd.AddCommand(alternate.AlternateCmd)
 }
 
 func initConfig() {

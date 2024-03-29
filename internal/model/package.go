@@ -45,3 +45,16 @@ func (p *Package) String() string {
 
 	return s
 }
+
+func (p *Package) AddAlternate(managerName string, pkg *Package) error {
+	if p.Alternates == nil {
+		p.Alternates = make(map[string]*Package)
+	}
+
+	if _, ok := p.Alternates[managerName]; ok {
+		return fmt.Errorf("alternate already exists for `%s`", managerName)
+	}
+
+	p.Alternates[managerName] = pkg
+	return nil
+}
