@@ -3,6 +3,7 @@ package pkg
 import (
 	"fmt"
 
+	"github.com/drew-english/system-configurator/internal/mode"
 	"github.com/drew-english/system-configurator/internal/store"
 	"github.com/drew-english/system-configurator/pkg/sys/pkgmanager"
 	"github.com/drew-english/system-configurator/pkg/termio"
@@ -20,7 +21,7 @@ var RemoveCmd = &cobra.Command{
 	Args: cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var cfg *store.Configuration
-		if modifyConfig() {
+		if mode.ManageConfig() {
 			var err error
 			if cfg, err = store.LoadConfiguration(); err != nil {
 				return fmt.Errorf("Unable to load configuration: %w", err)
@@ -28,7 +29,7 @@ var RemoveCmd = &cobra.Command{
 		}
 
 		var manager pkgmanager.PacakgeManager
-		if modifySystem() {
+		if mode.ManageSystem() {
 			var err error
 			if manager, err = pkgmanager.FindPackageManager(); err != nil {
 				return fmt.Errorf("Failed to resolve a package manager: %w", err)

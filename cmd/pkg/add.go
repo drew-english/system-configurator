@@ -32,7 +32,7 @@ Usage: scfg pkg add <package-name>@<version> <package-name> ...`,
 		}
 
 		var cfg *store.Configuration
-		if modifyConfig() {
+		if mode.ManageConfig() {
 			var err error
 			if cfg, err = store.LoadConfiguration(); err != nil {
 				return fmt.Errorf("Unable to load configuration: %w", err)
@@ -40,7 +40,7 @@ Usage: scfg pkg add <package-name>@<version> <package-name> ...`,
 		}
 
 		var manager pkgmanager.PacakgeManager
-		if modifySystem() {
+		if mode.ManageSystem() {
 			var err error
 			if manager, err = pkgmanager.FindPackageManager(); err != nil {
 				return fmt.Errorf("Failed to resolve a package manager: %w", err)
@@ -82,14 +82,4 @@ func addPackage(cfg *store.Configuration, manager pkgmanager.PacakgeManager, pkg
 	}
 
 	return nil
-}
-
-func modifySystem() bool {
-	currentMode := mode.Current()
-	return currentMode == mode.ModeHybrid || currentMode == mode.ModeSystem
-}
-
-func modifyConfig() bool {
-	currentMode := mode.Current()
-	return currentMode == mode.ModeHybrid || currentMode == mode.ModeConfiguration
 }

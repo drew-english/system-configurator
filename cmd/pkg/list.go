@@ -25,7 +25,7 @@ var ListCmd = &cobra.Command{
 Usage: scfg pkg list`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var configPackages []*model.Package
-		if modifyConfig() {
+		if mode.ManageConfig() {
 			cfg, err := store.LoadConfiguration()
 			if err != nil {
 				return fmt.Errorf("Unable to load configuration: %w", err)
@@ -39,7 +39,7 @@ Usage: scfg pkg list`,
 		}
 
 		var sysPackages []*model.Package
-		if modifySystem() {
+		if mode.ManageSystem() {
 			manager, err := pkgmanager.FindPackageManager()
 			if err != nil {
 				return fmt.Errorf("Unable to load configuration: %w", err)

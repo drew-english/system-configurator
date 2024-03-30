@@ -56,3 +56,13 @@ func Current() Mode {
 func (m Mode) String() string {
 	return modeToS[m]
 }
+
+func ManageSystem() bool {
+	currentMode := Current()
+	return currentMode == ModeHybrid || currentMode == ModeSystem
+}
+
+func ManageConfig() bool {
+	currentMode := Current()
+	return currentMode == ModeHybrid || currentMode == ModeConfiguration
+}

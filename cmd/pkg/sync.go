@@ -3,6 +3,7 @@ package pkg
 import (
 	"fmt"
 
+	"github.com/drew-english/system-configurator/internal/mode"
 	"github.com/drew-english/system-configurator/internal/model"
 	"github.com/drew-english/system-configurator/internal/store"
 	"github.com/drew-english/system-configurator/pkg/sys/pkgmanager"
@@ -51,7 +52,7 @@ Usage: scfg pkg sync`,
 			sysPackages[pkg.Name] = pkg
 		}
 
-		if modifyConfig() {
+		if mode.ManageConfig() {
 			for name, pkg := range sysPackages {
 				if _, ok := configPackages[name]; !ok {
 					termio.Printf("[Configuration] Adding package `%s`\n", pkg)
@@ -66,7 +67,7 @@ Usage: scfg pkg sync`,
 			}
 		}
 
-		if modifySystem() {
+		if mode.ManageSystem() {
 			for name, pkg := range configPackages {
 				if _, ok := sysPackages[name]; !ok {
 					managerPackageName := manager.FmtPackageVersion(pkg)
