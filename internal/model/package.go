@@ -3,15 +3,27 @@ package model
 import (
 	"fmt"
 	"regexp"
+
+	"gopkg.in/yaml.v3"
 )
 
 var packageRegex = regexp.MustCompile(`^([^@\s]+)(?:$|@(\S+$))`)
 
-type Package struct {
-	Name       string              `json:"name"`
-	Version    string              `json:"version,omitempty"`
-	Alternates map[string]*Package `json:"alternates,omitempty"` // map of alternative package manager name to package info
-}
+type (
+	Package struct {
+		Name       string
+		Version    string
+		Alternates map[string]*Package // map of alternative package manager name to package info
+
+		yamlStoredString string
+	}
+
+	yamlPkg struct {
+		Name       string              `yaml:"name"`
+		Version    string              `yaml:"version,omitempty"`
+		Alternates map[string]*Package `yaml:"alternates,omitempty"`
+	}
+)
 
 func ParsePackage(pkgStr string) (*Package, error) {
 	matches := packageRegex.FindStringSubmatch(pkgStr)
@@ -57,4 +69,39 @@ func (p *Package) AddAlternate(managerName string, pkg *Package) error {
 
 	p.Alternates[managerName] = pkg
 	return nil
+}
+
+func (p *Package) UnmarshalYAML(value *yaml.Node) error {
+	if value.Kind != yaml.ScalarNode {
+		decodedValue := new(yamlPkg)
+		if err := value.Decode(decodedValue); err != nil {
+			return err
+		}
+
+		p.Name = decodedValue.Name
+		p.Version = decodedValue.Version
+		p.Alternates = decodedValue.Alternates
+		return nil
+	}
+
+	pkg, err := ParsePackage(value.Value)
+	if err != nil {
+		return err
+	}
+
+	*p = *pkg
+	*&p.yamlStoredString = value.Value
+	return nil
+}
+
+func (p *Package) MarshalYAML() (interface{}, error) {
+	if p.yamlStoredString != "" {
+		return p.yamlStoredString, nil
+	}
+
+	return &yamlPkg{
+		Name:       p.Name,
+		Version:    p.Version,
+		Alternates: p.Alternates,
+	}, nil
 }

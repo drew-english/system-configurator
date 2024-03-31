@@ -8,6 +8,7 @@ import (
 
 	"github.com/drew-english/system-configurator/internal/model"
 	"github.com/drew-english/system-configurator/internal/store"
+	"github.com/google/go-cmp/cmp/cmpopts"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -42,14 +43,14 @@ var _ = Describe("Local", func() {
 
 		cfg = &store.LocalCfg{
 			Location: "./tmp/system-configurator",
-			FileName: "config.json",
+			FileName: "config.yaml",
 		}
 	})
 
 	JustBeforeEach(func() {
 		if cfgFixture != "" {
 			os.MkdirAll("./tmp/system-configurator", 0755)
-			f, _ := os.Create("./tmp/system-configurator/config.json")
+			f, _ := os.Create("./tmp/system-configurator/config.yaml")
 			f.WriteString(cfgFixture)
 			f.Close()
 		}
@@ -75,12 +76,12 @@ var _ = Describe("Local", func() {
 			})
 
 			It("creates a new one", func() {
-				_, err := os.Open("./tmp/system-configurator/config.json")
+				_, err := os.Open("./tmp/system-configurator/config.yaml")
 				Expect(errors.Is(err, os.ErrNotExist)).To(BeTrue())
 
 				subject()
 
-				file, err := os.Open("./tmp/system-configurator/config.json")
+				file, err := os.Open("./tmp/system-configurator/config.yaml")
 				Expect(err).ToNot(HaveOccurred())
 				defer file.Close()
 
@@ -141,7 +142,7 @@ var _ = Describe("Local", func() {
 						},
 					},
 				},
-			}))
+			}, cmpopts.IgnoreUnexported(model.Package{})))
 		})
 
 		Context("when the config file was not loaded correctly", func() {

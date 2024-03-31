@@ -9,6 +9,7 @@ import (
 	"github.com/drew-english/system-configurator/spec/stub/run"
 	"github.com/drew-english/system-configurator/spec/stub/store"
 	termio_stub "github.com/drew-english/system-configurator/spec/stub/termio"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/spf13/viper"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -65,10 +66,10 @@ var _ = Describe("Add", func() {
 		Expect(cfg.Packages[0]).To(BeComparableTo(&model.Package{
 			Name:    "some-new-package",
 			Version: "1.2.3",
-		}))
+		}, cmpopts.IgnoreUnexported(model.Package{})))
 		Expect(cfg.Packages[1]).To(BeComparableTo(&model.Package{
 			Name: "some-other-package",
-		}))
+		}, cmpopts.IgnoreUnexported(model.Package{})))
 		Expect(stdout).To(Equal("Successfully added 2 packages\n"))
 	})
 

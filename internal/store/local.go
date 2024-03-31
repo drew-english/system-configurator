@@ -1,15 +1,16 @@
 package store
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
 	"path"
+
+	"gopkg.in/yaml.v3"
 )
 
 const (
-	LocalDefaultFileName = "config.json"
+	LocalDefaultFileName = "config.yml"
 )
 
 type (
@@ -47,7 +48,7 @@ func (ls *localStore) LoadConfiguration() (*Configuration, error) {
 	}
 
 	configData := &Configuration{}
-	decoder := json.NewDecoder(ls.configFile)
+	decoder := yaml.NewDecoder(ls.configFile)
 	err := decoder.Decode(configData)
 	if err != nil {
 		return nil, err
@@ -65,12 +66,9 @@ func (ls *localStore) WriteConfiguration(configData *Configuration) error {
 		return errors.New("configuration data cannot be nil")
 	}
 
-	data, err := json.MarshalIndent(configData, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	_, err = ls.configFile.Write(data)
+	encoder := yaml.NewEncoder(ls.configFile)
+	encoder.SetIndent(2)
+	err := encoder.Encode(configData)
 	return err
 }
 
