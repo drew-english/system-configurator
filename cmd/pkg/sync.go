@@ -15,8 +15,8 @@ var SyncCmd = &cobra.Command{
 	Use:   "sync",
 	Short: "Sync packages between configuration and system",
 	Long: `Sync packages between configuration and system. Has different behavior based on the current mode:
-- Configuration: Add packages to the configuration that are present only on the system.
-- System: Add packages to the system that are present only in the configuration.
+- Configuration: Add packages to the system that are present only in the configuration.
+- System: Add packages to the configuration that are present only on the system.
 - Hybrid: Two-way sync packages between the configuration and system, only adding packages that are present in one but not the other.
 
 Usage: scfg pkg sync`,
@@ -53,6 +53,18 @@ Usage: scfg pkg sync`,
 		}
 
 		if mode.ManageConfig() {
+			for name, pkg := range configPackages {
+				if _, ok := sysPackages[name]; !ok {
+					managerPackageName := manager.FmtPackageVersion(pkg)
+					termio.Printf("[System] Adding package `%s`\n", managerPackageName)
+					if err := manager.AddPackage(pkg); err != nil {
+						termio.Warnf("[System] Failed to add package `%s`: %v\n", managerPackageName, err)
+					}
+				}
+			}
+		}
+
+		if mode.ManageSystem() {
 			for name, pkg := range sysPackages {
 				if _, ok := configPackages[name]; !ok {
 					termio.Printf("[Configuration] Adding package `%s`\n", pkg)
@@ -64,18 +76,6 @@ Usage: scfg pkg sync`,
 
 			if err := store.WriteConfiguration(cfg); err != nil {
 				return fmt.Errorf("Failed to write configuration: %w", err)
-			}
-		}
-
-		if mode.ManageSystem() {
-			for name, pkg := range configPackages {
-				if _, ok := sysPackages[name]; !ok {
-					managerPackageName := manager.FmtPackageVersion(pkg)
-					termio.Printf("[System] Adding package `%s`\n", managerPackageName)
-					if err := manager.AddPackage(pkg); err != nil {
-						termio.Warnf("[System] Failed to add package `%s`: %v\n", managerPackageName, err)
-					}
-				}
 			}
 		}
 
