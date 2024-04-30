@@ -9,9 +9,12 @@ Currently supported package managers are: apk, apt, brew, dnf, snap, and pacman.
 2. Run `go install drew-english/system-configurator@latest`
 
 # Usage
-The system configurator CLI bases its configuration on a yaml file located at `$HOME/.config/system-configurator/config.yml`. The CLI has CRUD operations that will manage the configuration file (or the system directly) for the user, but they are by no means required for use. 
+The system configurator CLI bases its configuration on a yaml file located at `$HOME/.config/system-configurator/config.yml`.
+The CLI has CRUD operations that will manage the configuration file (or the system directly) for the user, but they are by no means required for use. 
 
-Additionally, the CLI has 3 different operation modes: configuration, system, and hybrid. Each mode will tell system configurator how it should perform the command given. See the help output for specific behavior of a given command.
+Additionally, the CLI has 3 different operation modes: configuration, system, and hybrid.
+Each mode will tell system configurator how it should perform the command given.
+See the help output for specific behavior of a given command.
 
 Example configuration file:
 ```yaml
@@ -34,7 +37,8 @@ packages:
 #### Sync
 `scfg package sync`
 
-By default this will sync the packages from the configuration file to the system, installing only packages that are missing. See `scfg help package sync` for use with other modes.
+By default this will sync the packages from the configuration file to the system, installing only packages that are missing.
+See `scfg help package sync` for use with other modes.
 
 #### Add
 `scfg package add fzf`
@@ -45,3 +49,9 @@ By default this will add specified packages to the configuration. See `scfg help
 `scfg package rm fzf`
 
 By default this will remove the specified packages from the configuration. See `scfg help package rm` for use with other modes.
+
+# Issues
+If you encounter an issue:
+
+1. Check the issues page for the same issue (use the `bug` tag to filter).
+2. If your issue is not logged yet, open a new issue with clear steps to reproduce.
